@@ -1,49 +1,37 @@
 import React, { Component } from 'react'; // Destructured
 import { render } from 'react-dom'
 
-let skiData = {
-    total: 50,
-    powder: 20,
-    backcountry: 10,
-    goal: 100
-}
-
-const getPercent = decimal => {
-    return decimal * 100 + "%"
-}
-
-const calcGoalProgress = (total, goal) => {
-    return getPercent(total / goal)
-}
-
-// Using js syntax, create js function that returns jsx elements to be rendered
-const SkiDayCounter = ({total, powder, backcountry, goal}) => {
+// Child component
+const Book = ({title, author, pages}) => {
     return (
         <section>
-            <div>
-                <p>Total Days: {total}</p>
-            </div>
-            <div>
-                <p>Powder Days: {powder}</p>
-            </div>
-            <div>
-                <p>Backcountry Days: {backcountry}</p>
-            </div>
-            <div>
-                <p>Goal Progress: {calcGoalProgress(total, goal)}</p>
-            </div>
+            <h2>{title}</h2>
+            <p>by: {author}</p>
+            <p>Pages: {pages}</p>
         </section>
+    )
+}
+
+// Parent component which renders Book components
+const Library = () => {
+    return (
+        <div>
+            <Book title="The Sun Also Rises" 
+                  author="Ernest Hemingway" 
+                  pages={260}/>
+            <Book title="White Teeth" 
+                  author="Zadie Smith" 
+                  pages={480}/>
+            <Book title="Cat's Cradle" 
+                  author="Kurt Vonnegut" 
+                  pages={304}/>
+        </div>
     )
 }
 
 render( // ReactDOM.render()
     // What we want to render
-    <SkiDayCounter 
-        total={skiData.total}
-        powder={skiData.powder}
-        backcountry={skiData.backcountry}
-        goal={skiData.goal}
-        />,
+    <Library />,
 
     // Where do we want to render this? ... to root
     document.getElementById('root') 
