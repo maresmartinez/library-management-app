@@ -9,34 +9,38 @@ let bookList = [
 ];
 
 // Child component
-const Book = ({title, author, pages}) => {
+const Book = ({title, author, pages, freeBookmark}) => {
     return (
         <section>
             <h2>{title}</h2>
             <p>by: {author}</p>
             <p>Pages: {pages}</p>
+            <p>Free Bookmark Today: {freeBookmark ? 'Yes!' : 'No!'}</p>
         </section>
     )
 }
 
+const Hiring = () => 
+    <div>
+        <p>The library is hiring. Go to www.library.com/jobs for more</p>
+    </div>
+
+const NotHiring = () => 
+    <div>
+        <p>The library is nots hiring. Check back later for more info.</p>
+    </div>
+
 // Parent component which renders Book components
+// Should hold state in root of tree, i.e. Library, which holds Book
+// Lifting state up: parent passes down information to children
 class Library extends Component {
     
     // Allows us to get rid of the constructor
-    state = { open: false } // Static property
-    
-    // constructor(props) {
-    //     super(props)
-    //     // State is just an object with several keys, similar to props
-    //     // Can use these values within the context of the Library component
-    //     this.state = {
-    //         open: true
-    //     }
-
-    //     // Binding
-    //     // Makes "this" accessible with the context of custom methods
-    //     this.toggleOpenClosed = this.toggleOpenClosed.bind(this)
-    // }
+    state = {  // Source of truth!
+        open: true,
+        freeBookmark: true,
+        hiring: false
+     } // Static property
 
     // Will trigger change of state
     // Is asynchronous
@@ -52,6 +56,7 @@ class Library extends Component {
         const {books} = this.props;
         return (
             <div>
+                {this.state.hiring ? <Hiring /> : <NotHiring />}
                 <h1>The Library is {this.state.open ? 'Open' : 'Closed'}</h1>
                 <button onClick={this.toggleOpenClosed}>Change</button>
                 {/* We're mapping all the books in the array */}
@@ -61,7 +66,8 @@ class Library extends Component {
                         <Book key={i}
                               title={book.title}
                               author={book.author} 
-                              pages={book.pages}/>
+                              pages={book.pages}
+                              freeBookmark={this.state.freeBookmark}/>
                 )}
             </div>
         )
