@@ -33,14 +33,31 @@ const NotHiring = () =>
 // Parent component which renders Book components
 // Should hold state in root of tree, i.e. Library, which holds Book
 // Lifting state up: parent passes down information to children
+// Can only use component lifecycle methods when using class syntax
 class Library extends Component {
     
     // Allows us to get rid of the constructor
     state = {  // Source of truth!
         open: true,
         freeBookmark: true,
-        hiring: false
+        hiring: false,
+        data: [],
+        loading: false
      } // Static property
+
+     // Excellent place to fetch data
+     // Will change state to handle loading of data
+     componentDidMount() {
+         this.setState({loading: true})
+         // Fetching from a rest api
+         fetch("https://hplussport.com/api/products/order/price/sort/asc/qty/1")
+            .then(data => data.json())
+            .then(data => this.setState({data, loading: false}))
+     }
+
+     componentDidUpdate() {
+         console.log("The component just updated")
+     }
 
     // Will trigger change of state
     // Is asynchronous
@@ -51,12 +68,26 @@ class Library extends Component {
         }))
     }
 
+    // The only required method of the component lifecycle
     render() {
         console.log(this.state)
         const {books} = this.props;
         return (
             <div>
                 {this.state.hiring ? <Hiring /> : <NotHiring />}
+                {this.state.loading 
+                    ? "loading..."
+                    :<div>
+                        {this.state.data.map(product => {
+                            return (
+                                <div>
+                                    <h3>Library Product of the Week!</h3>
+                                    <h4>{product.name}</h4>
+                                    <img src={product.image} alt="product of the week" height={100} />
+                                </div>
+                            )
+                        })}
+                    </div>}
                 <h1>The Library is {this.state.open ? 'Open' : 'Closed'}</h1>
                 <button onClick={this.toggleOpenClosed}>Change</button>
                 {/* We're mapping all the books in the array */}
